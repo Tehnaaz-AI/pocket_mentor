@@ -1,8 +1,18 @@
+const DEFAULT_PROD_API = 'https://pocket-mentor-1-awbb.onrender.com/api';
+
 const getApiBase = () => {
   const envUrl = import.meta.env?.VITE_API_BASE || import.meta.env?.VITE_API_URL;
-  if (!envUrl) return '/api';
-  const clean = envUrl.replace(/\/+$/, '');
-  return clean.endsWith('/api') ? clean : `${clean}/api`;
+  if (envUrl) {
+    const clean = envUrl.replace(/\/+$/, '');
+    return clean.endsWith('/api') ? clean : `${clean}/api`;
+  }
+  
+  // When running on production domain (e.g. Vercel), default to live Render backend
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return DEFAULT_PROD_API;
+  }
+
+  return '/api';
 };
 
 const API_BASE = getApiBase();
