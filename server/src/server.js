@@ -76,12 +76,11 @@ app.use((err, req, res, next) => {
  */
 const start = async () => {
   await connectDB();
-  app.listen(config.port, () => {
-    console.log(`🚀 Pocket Mentor Backend running on http://localhost:${config.port}`);
-    // Report the provider that will actually be used, and whether it has a
-    // key. The old banner printed "Gemini Active" whenever a key STRING
-    // existed, regardless of whether that key worked — which was misleading
-    // during the Gemini authorization outage.
+  const PORT = config.port || 5001;
+  const HOST = '0.0.0.0';
+
+  app.listen(PORT, HOST, () => {
+    console.log(`🚀 Pocket Mentor Backend running on http://${HOST}:${PORT}`);
     const provider = config.aiProvider === 'gemini' ? 'Gemini' : 'Groq';
     const models = config.aiProvider === 'gemini' ? config.geminiModels : config.groqModels;
     if (aiService.hasProvider()) {
@@ -96,6 +95,12 @@ const start = async () => {
 };
 
 start().catch((err) => {
-  console.error('Failed to start Pocket Mentor:', err.message);
+  console.error('\n❌ Failed to start Pocket Mentor:', err.message);
+  if (err.message.includes('ECONNREFUSED') || !process.env.MONGODB_URI) {
+    console.error('\n💡 Deployment Diagnostic:');
+    console.error('   1. If deploying on Render / cloud, configure MONGODB_URI in your environment variables.');
+    console.error('   2. Use a cloud MongoDB connection string (e.g., MongoDB Atlas: mongodb+srv://<user>:<password>@cluster.mongodb.net/dbname).');
+    console.error('   3. Ensure Network Access in MongoDB Atlas allows 0.0.0.0/0 (all IPs).\n');
+  }
   process.exit(1);
 });

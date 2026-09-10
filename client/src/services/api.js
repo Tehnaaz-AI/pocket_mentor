@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = (import.meta.env?.VITE_API_BASE || '/api').replace(/\/$/, '');
 
 function getAuthHeaders() {
   const token = localStorage.getItem('pm_token');
@@ -14,7 +14,8 @@ async function request(endpoint, options = {}) {
     ? { ...(localStorage.getItem('pm_token') ? { Authorization: `Bearer ${localStorage.getItem('pm_token')}` } : {}) }
     : getAuthHeaders();
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const response = await fetch(`${API_BASE}${formattedEndpoint}`, {
     ...options,
     headers: {
       ...headers,
