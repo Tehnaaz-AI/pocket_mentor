@@ -162,7 +162,7 @@ GET  POST   /api/academic/assessments   external/offline scores only
 
 - **Frontend**: React 18, Vite, Tailwind CSS, Lucide React, Canvas Confetti.
 - **Backend**: Node.js, Express.js, Multer, `pdf-parse`, `mammoth`, JWT, `bcryptjs`.
-- **Database**: MongoDB + Mongoose (with fallback in-memory support).
+- **Database**: MongoDB + Mongoose. (Until the Academic OS merge this was a flat JSON file at `server/data/store.json`; a pre-merge copy is kept in `server/data/archive/` and `npm run migrate --prefix server` imports it.)
 - **AI Integration**: Google Gemini API (`gemini-1.5-flash` / `gemini-2.0`) with a built-in algorithmic heuristic NLP engine for offline or zero-key operation.
 
 ---
@@ -173,19 +173,14 @@ GET  POST   /api/academic/assessments   external/offline scores only
 - Node.js (v18+) and npm installed.
 
 ### 1. Installation
-Install dependencies in both directories:
+In the project root, run:
 ```bash
-# In backend folder
-cd backend
-npm install
-
-# In frontend folder
-cd ../frontend
-npm install
+npm run install:all
 ```
+*(Or `npm install` inside both `server/` and `client/` directories)*
 
 ### 2. Environment Configuration
-Backend settings can be configured in `backend/.env` (see `backend/.env.example`):
+Backend settings are in `server/.env`:
 ```env
 PORT=5001
 JWT_SECRET=pocket_mentor_super_jwt_secret_998877
@@ -195,11 +190,12 @@ CLIENT_URL=http://localhost:5173
 GEMINI_API_KEY=
 
 # Fallback Gemini Keys for reaching higher quotas / handling rate limits
+# (Supports comma-separated keys or dedicated fallback variables)
 GEMINI_API_KEYS=key1,key2,key3
 GEMINI_FALLBACK_KEY_1=
 GEMINI_FALLBACK_KEY_2=
 
-# Fallback Model Priority Cascade
+# Fallback Model Priority Cascade (rotates automatically if rate limits or errors occur)
 GEMINI_MODELS=gemini-1.5-flash,gemini-2.0-flash,gemini-1.5-pro
 
 MONGODB_URI=mongodb://localhost:27017/pocketmentor
@@ -211,16 +207,16 @@ Open two terminal windows:
 
 **Terminal 1 (Backend API):**
 ```bash
-cd backend
+cd server
 npm run dev
 # Server starts on http://localhost:5001
 ```
 
-**Terminal 2 (Frontend App):**
+**Terminal 2 (Frontend Client):**
 ```bash
-cd frontend
+cd client
 npm run dev
-# Vite frontend starts on http://localhost:5173
+# Vite client starts on http://localhost:5173
 ```
 
 Visit **`http://localhost:5173`** in your browser!

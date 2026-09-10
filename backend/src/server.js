@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { config } from './config/index.js';
 import { connectDB } from './config/db.js';
@@ -58,6 +59,35 @@ app.use('/api/dashboard', (req, res, next) => {
   req.url = '/dashboard';
   progressRoutes(req, res, next);
 });
+
+// Static Frontend Serving (if built)
+const potentialDistPaths = [
+  path.resolve(__dirname, '../../frontend/dist'),
+  path.resolve(process.cwd(), 'frontend/dist'),
+  path.resolve(process.cwd(), 'dist'),
+  path.resolve(__dirname, '../public')
+];
+
+const staticDistPath = potentialDistPaths.find(p => fs.existsSync(p));
+
+if (staticDistPath) {
+  console.log(`📦 Serving static frontend from: ${staticDistPath}`);
+  app.use(express.static(staticDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(staticDistPath, 'index.html'));
+  });
+} else {
+  // Root API landing
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'ok',
+      service: 'Pocket Mentor API',
+      message: 'Pocket Mentor API is running. Frontend is available via client dev server or deployed build.',
+      health: '/api/health'
+    });
+  });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {
