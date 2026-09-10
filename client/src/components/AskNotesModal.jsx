@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, Send, Quote, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import { Send, Quote, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import { api } from '../services/api';
 
 export default function AskNotesModal({ sessionId }) {
@@ -25,23 +25,25 @@ export default function AskNotesModal({ sessionId }) {
   };
 
   const sampleQuestions = [
-    "What is the main requirement for mutual exclusion?",
-    "How does the rate-limiting enzyme work?",
-    "What is the difference between L1 and L2 regularization?"
+    "What are the main requirements?",
+    "Explain this with a concrete example",
+    "How does this relate to the core theorem?"
   ];
 
   return (
-    <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+    <div className="card-miro p-6 sm:p-8 border-[#e0e2e8] bg-white space-y-6">
       <div>
         <div className="flex items-center space-x-2">
-          <div className="p-2 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-white tracking-tight">Ask My Notes</h3>
-            <p className="text-xs text-slate-400">Ask any question and receive answers strictly verified against your lecture notes.</p>
-          </div>
+          <span className="badge-pill badge-blue text-[10px]">
+            NOTE GROUNDED AI
+          </span>
         </div>
+        <h3 className="text-lg font-bold text-[#1c1c1e] tracking-tight mt-1">
+          Ask My Notes
+        </h3>
+        <p className="text-xs text-[#555a6a]">
+          Ask questions about the lecture material you are currently studying. Answers are grounded directly in your notes.
+        </p>
       </div>
 
       {/* Input Form */}
@@ -50,35 +52,35 @@ export default function AskNotesModal({ sessionId }) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="e.g. What causes a deadlock in process synchronization?"
-          className="w-full px-4 py-3.5 pr-28 rounded-2xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors shadow-inner"
+          placeholder="e.g. What is the fundamental mechanism behind this concept?"
+          className="input-miro w-full pr-28 py-3 text-sm"
         />
         <button
           type="submit"
           disabled={isLoading || !query.trim()}
-          className="absolute right-2 top-2 bottom-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-40 text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md shadow-brand-600/20"
+          className="btn-primary absolute right-2 top-1.5 bottom-1.5 px-4 text-xs font-semibold"
         >
-          {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-          <span>Ask AI</span>
+          {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Send className="w-3.5 h-3.5 mr-1" />}
+          <span>Ask</span>
         </button>
       </form>
 
       {/* Quick Prompts */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-slate-500">Quick ideas:</span>
+        <span className="text-xs text-[#8e91a0]">Suggested queries:</span>
         {sampleQuestions.map((sq, i) => (
           <button
             key={i}
             onClick={() => setQuery(sq)}
-            className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900 border border-white/5 text-slate-400 hover:text-brand-300 hover:border-brand-500/30 transition-colors"
+            className="text-[11px] px-2.5 py-1 rounded-full bg-[#f7f8fa] border border-[#e0e2e8] text-[#555a6a] hover:text-[#1c1c1e] hover:border-[#1c1c1e] transition-colors"
           >
-            "{sq.slice(0, 35)}..."
+            "{sq}"
           </button>
         ))}
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center space-x-2">
+        <div className="p-3.5 rounded-xl bg-[#ffc6c6]/40 border border-[#ff9999] text-[#600000] text-xs flex items-center space-x-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -86,33 +88,33 @@ export default function AskNotesModal({ sessionId }) {
 
       {/* Grounded Answer Display */}
       {result && (
-        <div className="p-5 rounded-2xl bg-slate-900/90 border border-brand-500/30 space-y-4 animate-in fade-in">
+        <div className="p-6 rounded-2xl bg-[#fafbfc] border border-[#e0e2e8] space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-300 flex items-center space-x-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Grounded Answer</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#1c1c1e] flex items-center space-x-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#ffd02f]" />
+              <span>Grounded Response</span>
             </span>
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+            <span className={`badge-pill text-[10px] ${
               result.isFoundInNotes
-                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                ? 'badge-teal'
+                : 'badge-yellow'
             }`}>
-              {result.isFoundInNotes ? 'Direct Source Match' : 'General Context'}
+              {result.isFoundInNotes ? 'Verified Note Source' : 'General Conceptual Context'}
             </span>
           </div>
 
-          <p className="text-sm text-slate-200 leading-relaxed">
+          <p className="text-sm text-[#1c1c1e] leading-relaxed">
             {result.answer}
           </p>
 
           {/* Verbatim Source Citation */}
           {result.sourceExcerpt && (
-            <div className="pt-3 border-t border-white/10">
-              <div className="text-[11px] font-bold text-slate-400 flex items-center space-x-1 mb-1.5">
-                <Quote className="w-3 h-3 text-brand-400" />
-                <span>Verified Note Excerpt:</span>
+            <div className="pt-3 border-t border-[#eef0f3]">
+              <div className="text-[11px] font-bold text-[#8e91a0] flex items-center space-x-1 mb-1.5">
+                <Quote className="w-3 h-3 text-[#1c1c1e]" />
+                <span>Source Excerpt from Notes:</span>
               </div>
-              <blockquote className="text-xs text-slate-300 italic bg-slate-950/60 p-3 rounded-xl border-l-2 border-brand-500">
+              <blockquote className="text-xs text-[#555a6a] italic bg-white p-3.5 rounded-xl border-l-2 border-[#1c1c1e]">
                 "{result.sourceExcerpt}"
               </blockquote>
             </div>

@@ -7,34 +7,52 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
       colors: {
-        brand: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          950: '#0f0c20',
-        },
-        slate: {
-          850: '#172033',
-          900: '#0f172a',
-          950: '#080c16',
+        miro: {
+          canvas: '#ffffff',
+          surface: '#f7f8fa',
+          'surface-soft': '#fafbfc',
+          'surface-yellow': '#fff8e0',
+          'surface-blue': '#f5f3ff',
+          'border-subtle': '#eef0f3',
+          'border-default': '#e0e2e8',
+          'border-strong': '#c7cad5',
+          'ink': '#1c1c1e',
+          'ink-secondary': '#2c2c34',
+          'ink-body': '#555a6a',
+          'ink-muted': '#8e91a0',
+          'yellow': '#ffd02f',
+          'yellow-light': '#fff8e0',
+          'yellow-dark': '#746019',
+          'blue': '#4262ff',
+          'blue-light': '#f5f3ff',
+          'blue-dark': '#2a41b6',
+          'teal': '#0fbcb0',
+          'mint': '#c3faf5',
+          'teal-dark': '#187574',
+          'coral': '#ff9999',
+          'coral-light': '#ffc6c6',
+          'coral-dark': '#600000',
+          'rose': '#ffd8f4',
+          'green': '#00b473',
+          'green-light': '#e6f7f0',
         }
       },
-      animation: {
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 6s ease-in-out infinite',
+      borderRadius: {
+        '2xl': '16px',
+        '3xl': '24px',
+        '4xl': '32px',
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        }
+      boxShadow: {
+        'subtle': '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
+        'card': '0 2px 8px rgba(0, 0, 0, 0.04)',
+        'lift': '0 8px 24px rgba(0, 0, 0, 0.06)',
+        'focus-yellow': '0 0 0 3px rgba(255, 208, 47, 0.35)',
+        'focus-blue': '0 0 0 3px rgba(66, 98, 255, 0.25)',
       }
     },
   },

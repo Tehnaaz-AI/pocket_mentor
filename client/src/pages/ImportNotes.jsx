@@ -1,27 +1,46 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Upload, FileText, Sparkles, Sliders, CheckCircle2, 
-  AlertCircle, ArrowRight, Loader2, BookOpen, Database 
+  Upload, FileText, Sparkles, Sliders, 
+  AlertCircle, ArrowRight, Loader2, BookOpen, Database, Folder
 } from 'lucide-react';
 import { sampleNotes } from '../utils/sampleNotes';
 import { api } from '../services/api';
 import AnimatedProgress from '../components/AnimatedProgress';
 
 export default function ImportNotes({ onStudyKitGenerated }) {
-  const [activeTab, setActiveTab] = useState('paste'); // 'upload' or 'paste'
+  const [activeTab, setActiveTab] = useState('paste'); // 'paste', 'upload', 'saved'
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('Computer Science');
   const [difficulty, setDifficulty] = useState('Medium');
   const [questionCount, setQuestionCount] = useState(5);
   const [text, setText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [savedNotes, setSavedNotes] = useState([]);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(false);
   const [isExtracting, setIsExtracting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
 
   const fileInputRef = useRef(null);
 
-  // Quick loader for sample notes
+  useEffect(() => {
+    if (activeTab === 'saved') {
+      loadSavedNotes();
+    }
+  }, [activeTab]);
+
+  const loadSavedNotes = async () => {
+    setIsLoadingSaved(true);
+    try {
+      const res = await api.getNotes();
+      setSavedNotes(res.notes || []);
+    } catch (err) {
+      console.error('Failed to load saved notes:', err);
+    } finally {
+      setIsLoadingSaved(false);
+    }
+  };
+
   const handleLoadSample = (sampleId) => {
     const sample = sampleNotes.find(s => s.id === sampleId);
     if (sample) {
@@ -29,7 +48,46 @@ export default function ImportNotes({ onStudyKitGenerated }) {
       setSubject(sample.subject);
       setDifficulty(sample.difficulty);
       setText(sample.text);
+      setActiveTab('paste');
       setError('');
+    }
+  };
+
+  const handleSelectSavedNote = (note) => {
+    setTitle(note.title);
+    setSubject(note.subject || 'General');
+    setText(note.extractedText || note.rawText || '');
+    setActiveTab('paste');
+    setError('');
+  };
+
+  const handleStudySavedNoteDirectly = async (note) => {
+    setTitle(note.title);
+    setSubject(note.subject || 'General');
+    setText(note.extractedText || note.rawText || '');
+    
+    setIsGenerating(true);
+    setError('');
+
+    try {
+      const result = await api.generateStudyKit({
+        text: note.extractedText || note.rawText || note.title,
+        title: note.title,
+        subject: note.subject || 'General',
+        difficulty,
+        questionCount
+      });
+
+      setTimeout(() => {
+        setIsGenerating(false);
+        if (onStudyKitGenerated) {
+          onStudyKitGenerated(result.sessionId);
+        }
+      }, 3500);
+
+    } catch (err) {
+      setIsGenerating(false);
+      setError(err.message || 'Failed to generate study kit.');
     }
   };
 
@@ -51,6 +109,7 @@ export default function ImportNotes({ onStudyKitGenerated }) {
       if (res.note) {
         setText(res.note.extractedText);
         if (!title) setTitle(res.note.title);
+        setActiveTab('paste');
       }
     } catch (err) {
       setError(err.message || 'Failed to extract text from file.');
@@ -77,7 +136,6 @@ export default function ImportNotes({ onStudyKitGenerated }) {
         questionCount
       });
 
-      // Small delay to allow the stage visualizer to complete
       setTimeout(() => {
         setIsGenerating(false);
         if (onStudyKitGenerated) {
@@ -92,77 +150,95 @@ export default function ImportNotes({ onStudyKitGenerated }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Visualizer modal while generating */}
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      {/* Animated generation modal */}
       <AnimatedProgress isGenerating={isGenerating} />
 
       {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-bold">
-          <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-          <span>Step 1: Ingest & Configure</span>
+      <div className="space-y-1.5 border-b border-[#e0e2e8] pb-6">
+        <div className="flex items-center space-x-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#8e91a0]">
+            Study Entry
+          </span>
+          <span className="w-1 h-1 rounded-full bg-[#8e91a0]"></span>
+          <span className="badge-pill badge-yellow text-[10px]">
+            Active Learning
+          </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Import Class Notes & Lecture Materials
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1c1c1e] tracking-tight">
+          Create a New Study Kit
         </h1>
-        <p className="text-sm text-slate-400 max-w-lg mx-auto">
-          Paste your rough notes or upload course documents. You will be able to preview and tweak before AI synthesizes your study kit.
+        <p className="text-sm text-[#555a6a]">
+          Paste raw notes, upload documents, or choose saved materials. Pocket Mentor turns them into structured concepts, flashcards, and quizzes.
         </p>
       </div>
 
-      {/* Preloaded Sample Notes Bar (For Fast Reviewing!) */}
-      <div className="card-glass p-4 rounded-2xl border border-brand-500/20 bg-brand-950/20 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-2 text-xs font-bold text-brand-300">
-          <Database className="w-4 h-4 text-brand-400" />
-          <span>1-Click Test Notes:</span>
+      {/* 1-Click Demo Samples Bar */}
+      <div className="card-miro p-4 border-[#e0e2e8] bg-[#fafbfc] flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center space-x-2 text-xs font-semibold text-[#1c1c1e]">
+          <Database className="w-4 h-4 text-[#ffd02f]" />
+          <span>Quick Sample Notes:</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {sampleNotes.map(sample => (
             <button
               key={sample.id}
               onClick={() => handleLoadSample(sample.id)}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-brand-500/30 text-slate-300 hover:text-white hover:border-brand-400 text-xs font-semibold transition-all flex items-center space-x-1.5"
+              className="px-3 py-1.5 rounded-full bg-white border border-[#e0e2e8] text-xs font-medium text-[#555a6a] hover:text-[#1c1c1e] hover:border-[#1c1c1e] transition-all"
             >
-              <span>{sample.subject}:</span>
-              <span className="text-brand-300">{sample.title.split(':')[1] || sample.title}</span>
+              <span className="font-semibold text-[#1c1c1e]">{sample.subject}:</span> {sample.title.split(':')[1] || sample.title}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Input Mode Tabs: Upload File or Paste Notes */}
-      <div className="card-glass rounded-3xl border border-white/10 p-6 sm:p-8 space-y-6">
-        <div className="flex border-b border-white/10 pb-4 gap-4">
+      {/* Main Form Container */}
+      <div className="card-miro border-[#e0e2e8] bg-white p-6 sm:p-8 space-y-6">
+        
+        {/* Source Switcher Tabs */}
+        <div className="flex border-b border-[#eef0f3] pb-3 gap-6">
           <button
             onClick={() => setActiveTab('paste')}
-            className={`flex items-center space-x-2 pb-2 text-sm font-bold border-b-2 transition-all ${
+            className={`flex items-center space-x-2 pb-2 text-sm font-semibold transition-all border-b-2 ${
               activeTab === 'paste'
-                ? 'border-brand-500 text-white'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-[#1c1c1e] text-[#1c1c1e]'
+                : 'border-transparent text-[#8e91a0] hover:text-[#1c1c1e]'
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>Paste Notes Directly</span>
+            <span>Paste Text Notes</span>
           </button>
 
           <button
             onClick={() => setActiveTab('upload')}
-            className={`flex items-center space-x-2 pb-2 text-sm font-bold border-b-2 transition-all ${
+            className={`flex items-center space-x-2 pb-2 text-sm font-semibold transition-all border-b-2 ${
               activeTab === 'upload'
-                ? 'border-brand-500 text-white'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-[#1c1c1e] text-[#1c1c1e]'
+                : 'border-transparent text-[#8e91a0] hover:text-[#1c1c1e]'
             }`}
           >
             <Upload className="w-4 h-4" />
-            <span>Upload Document (PDF / DOCX / TXT)</span>
+            <span>Upload File</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('saved')}
+            className={`flex items-center space-x-2 pb-2 text-sm font-semibold transition-all border-b-2 ${
+              activeTab === 'saved'
+                ? 'border-[#1c1c1e] text-[#1c1c1e]'
+                : 'border-transparent text-[#8e91a0] hover:text-[#1c1c1e]'
+            }`}
+          >
+            <Folder className="w-4 h-4" />
+            <span>Saved Notes</span>
           </button>
         </div>
 
-        {/* Upload Mode Area */}
+        {/* Tab 1: Upload Dropzone */}
         {activeTab === 'upload' && (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-white/15 hover:border-brand-500/50 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-slate-900/40 group"
+            className="border-2 border-dashed border-[#c7cad5] hover:border-[#1c1c1e] rounded-2xl p-10 text-center cursor-pointer transition-colors bg-[#fafbfc] group"
           >
             <input
               ref={fileInputRef}
@@ -171,131 +247,189 @@ export default function ImportNotes({ onStudyKitGenerated }) {
               onChange={handleFileUpload}
               className="hidden"
             />
-            <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-400 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-[#fff8e0] border border-[#ffd02f]/50 flex items-center justify-center text-[#1c1c1e]">
               {isExtracting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Upload className="w-6 h-6" />}
             </div>
-            <p className="text-sm font-bold text-white mb-1">
-              {selectedFile ? selectedFile.name : 'Click to select or drag and drop files here'}
+            <p className="text-sm font-bold text-[#1c1c1e] mb-1">
+              {selectedFile ? selectedFile.name : 'Click to select or drop documents here'}
             </p>
-            <p className="text-xs text-slate-400">
-              Supports PDF, DOCX, and TXT up to 10MB
+            <p className="text-xs text-[#8e91a0]">
+              Supports PDF, DOCX, and TXT files up to 10MB
             </p>
           </div>
         )}
 
-        {/* Metadata Configuration Inputs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Note Topic / Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Operating Systems: Process Synchronization"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors"
-            />
-          </div>
+        {/* Tab 2: Saved Notes List */}
+        {activeTab === 'saved' && (
+          <div className="space-y-3">
+            {isLoadingSaved ? (
+              <div className="p-8 text-center text-xs text-[#8e91a0] flex items-center justify-center space-x-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Loading saved materials…</span>
+              </div>
+            ) : savedNotes.length > 0 ? (
+              <div className="space-y-2">
+                {savedNotes.map((n) => (
+                  <div
+                    key={n._id}
+                    className="p-4 rounded-xl border border-[#e0e2e8] bg-white hover:bg-[#fafbfc] flex items-center justify-between transition-colors"
+                  >
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="badge-pill badge-neutral text-[10px]">
+                          {n.subject || 'General'}
+                        </span>
+                        <span className="text-xs font-semibold text-[#1c1c1e]">
+                          {n.title}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#8e91a0] line-clamp-1">
+                        {n.extractedText ? `${n.extractedText.slice(0, 80)}…` : 'Raw note content'}
+                      </p>
+                    </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Academic Subject</label>
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="e.g. Computer Science, Medicine, History"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-colors"
-            />
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleSelectSavedNote(n)}
+                        className="btn-ghost text-xs px-3 py-1.5"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleStudySavedNoteDirectly(n)}
+                        className="btn-primary text-xs px-3.5 py-1.5"
+                      >
+                        Study this
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-xs text-[#8e91a0] rounded-xl bg-[#fafbfc] border border-dashed border-[#e0e2e8]">
+                Your study workspace has no saved notes yet. Paste or upload notes above to begin.
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
-        {/* Note Content Preview & Editor */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-xs font-semibold text-slate-300">
-              Extracted Notes Content (Editable Preview)
-            </label>
-            <span className="text-xs text-slate-500 font-mono">
-              {text ? `${text.split(/\s+/).filter(Boolean).length} words` : '0 words'}
-            </span>
-          </div>
-          <textarea
-            rows={10}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Paste your raw lecture notes, bullet points, study guides, or summaries here..."
-            className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 text-sm font-sans focus:outline-none focus:border-brand-500 transition-colors leading-relaxed shadow-inner"
-          />
-        </div>
-
-        {/* Study Kit Generation Parameters */}
-        <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/5 space-y-4">
-          <div className="flex items-center space-x-2 text-xs font-bold text-slate-300 uppercase tracking-wider">
-            <Sliders className="w-4 h-4 text-brand-400" />
-            <span>AI Generation Settings</span>
-          </div>
-
+        {/* Tab 3: Paste & Config Form */}
+        <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Difficulty */}
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5">Target Difficulty</label>
-              <div className="grid grid-cols-3 gap-2">
-                {['Easy', 'Medium', 'Hard'].map(d => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDifficulty(d)}
-                    className={`py-2 rounded-xl text-xs font-bold transition-all border ${
-                      difficulty === d
-                        ? 'bg-brand-600 text-white border-brand-500 shadow-md shadow-brand-600/20'
-                        : 'bg-slate-900 text-slate-400 border-white/5 hover:text-slate-200'
-                    }`}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
+              <label className="block text-xs font-semibold text-[#2c2c34] mb-1.5">
+                Topic or Lecture Title
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Operating Systems: Deadlock Handling"
+                className="input-miro w-full"
+              />
             </div>
 
-            {/* Quiz Question Count */}
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5">Quiz Question Count</label>
-              <div className="grid grid-cols-4 gap-2">
-                {[3, 5, 8, 10].map(c => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setQuestionCount(c)}
-                    className={`py-2 rounded-xl text-xs font-bold transition-all border ${
-                      questionCount === c
-                        ? 'bg-brand-600 text-white border-brand-500 shadow-md shadow-brand-600/20'
-                        : 'bg-slate-900 text-slate-400 border-white/5 hover:text-slate-200'
-                    }`}
-                  >
-                    {c} Qs
-                  </button>
-                ))}
+              <label className="block text-xs font-semibold text-[#2c2c34] mb-1.5">
+                Subject
+              </label>
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="e.g. Computer Science, Neuroscience, Economics"
+                className="input-miro w-full"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-[#2c2c34]">
+                Note Content
+              </label>
+              <span className="text-xs text-[#8e91a0] font-mono">
+                {text ? `${text.split(/\s+/).filter(Boolean).length} words` : '0 words'}
+              </span>
+            </div>
+            <textarea
+              rows={9}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Paste your raw lecture notes, bullet points, textbook summaries, or formulas here..."
+              className="input-miro w-full leading-relaxed resize-y font-sans"
+            />
+          </div>
+
+          {/* AI Settings */}
+          <div className="p-4 rounded-xl bg-[#f7f8fa] border border-[#eef0f3] space-y-3">
+            <div className="flex items-center space-x-1.5 text-xs font-semibold text-[#8e91a0] uppercase tracking-wider">
+              <Sliders className="w-3.5 h-3.5 text-[#1c1c1e]" />
+              <span>Study Kit Configuration</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs text-[#555a6a] mb-1.5">Depth / Difficulty</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Easy', 'Medium', 'Hard'].map(d => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setDifficulty(d)}
+                      className={`py-1.5 rounded-full text-xs font-medium transition-all border ${
+                        difficulty === d
+                          ? 'bg-[#1c1c1e] text-white border-[#1c1c1e]'
+                          : 'bg-white text-[#555a6a] border-[#e0e2e8] hover:text-[#1c1c1e]'
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs text-[#555a6a] mb-1.5">Quiz Length</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[3, 5, 8, 10].map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setQuestionCount(c)}
+                      className={`py-1.5 rounded-full text-xs font-mono font-medium transition-all border ${
+                        questionCount === c
+                          ? 'bg-[#1c1c1e] text-white border-[#1c1c1e]'
+                          : 'bg-white text-[#555a6a] border-[#e0e2e8] hover:text-[#1c1c1e]'
+                      }`}
+                    >
+                      {c} Qs
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+
+          {error && (
+            <div className="p-3.5 rounded-xl bg-[#ffc6c6]/40 border border-[#ff9999] text-[#600000] text-xs flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Submit CTA */}
+          <button
+            onClick={handleGenerate}
+            disabled={isGenerating || !text.trim()}
+            className="btn-primary w-full py-3.5 text-sm font-semibold"
+          >
+            <Sparkles className="w-4 h-4 mr-2 text-[#ffd02f]" />
+            <span>Generate Study Kit</span>
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </button>
         </div>
 
-        {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Generate Study Kit Button */}
-        <button
-          onClick={handleGenerate}
-          disabled={isGenerating || !text.trim()}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-brand-500 hover:from-brand-500 hover:to-indigo-500 disabled:opacity-40 text-white text-base font-bold shadow-xl shadow-brand-600/25 flex items-center justify-center space-x-2 transition-all hover:scale-[1.01]"
-        >
-          <Sparkles className="w-5 h-5 text-amber-300" />
-          <span>Generate Structured Study Kit</span>
-          <ArrowRight className="w-5 h-5 ml-1" />
-        </button>
       </div>
     </div>
   );

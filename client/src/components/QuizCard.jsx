@@ -1,33 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Timer, CheckCircle, HelpCircle, AlertCircle, ArrowRight, ArrowLeft, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { HelpCircle, ArrowRight, ArrowLeft, Send } from 'lucide-react';
 
 export default function QuizCard({ quiz, onSubmit, isSubmitting }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // { [q.id]: selectedOptionIndex }
-  const [examMode, setExamMode] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60 * 5); // 5 minutes default
 
   const questions = quiz?.questions || [];
 
-  // Exam mode timer countdown
-  useEffect(() => {
-    if (!examMode) return;
-    if (timeLeft <= 0) {
-      handleSubmit();
-      return;
-    }
-    const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [examMode, timeLeft]);
-
   if (!questions || questions.length === 0) {
     return (
-      <div className="card-glass p-12 rounded-3xl text-center">
-        <HelpCircle className="w-12 h-12 text-brand-400 mx-auto mb-3 opacity-60" />
-        <h3 className="text-lg font-bold text-white mb-1">No Quiz Generated Yet</h3>
-        <p className="text-sm text-slate-400">Generate a study kit to test your knowledge.</p>
+      <div className="card-miro p-12 text-center bg-[#fafbfc] border-[#e0e2e8]">
+        <HelpCircle className="w-10 h-10 text-[#ffd02f] mx-auto mb-2" />
+        <h3 className="text-base font-bold text-[#1c1c1e] mb-1">No Quiz Generated</h3>
+        <p className="text-xs text-[#555a6a]">Generate a study kit to test your retention with diagnostic questions.</p>
       </div>
     );
   }
@@ -49,58 +34,31 @@ export default function QuizCard({ quiz, onSubmit, isSubmitting }) {
     }
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      {/* Quiz Top Bar */}
-      <div className="card-glass p-4 sm:p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 border border-white/10">
-        <div>
+    <div className="max-w-2xl mx-auto space-y-5">
+      {/* Quiz Top Header */}
+      <div className="card-miro p-4 sm:p-5 border-[#e0e2e8] bg-white flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-0.5">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-300">
+            <span className="badge-pill badge-neutral text-[10px]">
               {quiz.topic || 'Diagnostic Assessment'}
             </span>
-            <span className="px-2 py-0.5 text-[11px] font-semibold bg-slate-800 text-slate-300 rounded-md">
-              {answeredCount}/{questions.length} Answered
+            <span className="badge-pill badge-yellow font-mono text-[10px]">
+              {answeredCount}/{questions.length} answered
             </span>
           </div>
-          <p className="text-sm font-bold text-white mt-1">
+          <p className="text-xs font-semibold text-[#1c1c1e] pt-1">
             Question {currentIndex + 1} of {questions.length}
           </p>
         </div>
 
-        {/* Exam Mode Toggle & Timer */}
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={() => setExamMode(!examMode)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-              examMode
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20'
-                : 'bg-slate-800/80 text-slate-400 border-white/5 hover:text-slate-200'
-            }`}
-          >
-            {examMode ? 'Exam Mode Active' : 'Enable Exam Mode'}
-          </button>
-
-          {examMode && (
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-amber-500/30 text-amber-400 font-mono text-sm font-bold">
-              <Timer className="w-4 h-4 animate-spin-slow" />
-              <span>{formatTime(timeLeft)}</span>
-            </div>
-          )}
+        {/* Progress Bar */}
+        <div className="w-32 bg-[#f0f2f5] h-2 rounded-full overflow-hidden">
+          <div
+            className="bg-[#1c1c1e] h-full rounded-full transition-all duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-white/5">
-        <div
-          className="bg-gradient-to-r from-brand-600 to-indigo-500 h-full rounded-full transition-all duration-300"
-          style={{ width: `${progressPercent}%` }}
-        />
       </div>
 
       {/* Question Palette Navigation Dots */}
@@ -112,12 +70,12 @@ export default function QuizCard({ quiz, onSubmit, isSubmitting }) {
             <button
               key={q.id}
               onClick={() => setCurrentIndex(idx)}
-              className={`w-8 h-8 rounded-xl text-xs font-bold transition-all ${
+              className={`w-7 h-7 rounded-full text-xs font-mono font-bold transition-all ${
                 isCurrent
-                  ? 'bg-brand-600 text-white ring-2 ring-brand-400 shadow-md shadow-brand-600/30'
+                  ? 'bg-[#1c1c1e] text-white shadow-subtle'
                   : isAnswered
-                  ? 'bg-brand-500/20 text-brand-300 border border-brand-500/30'
-                  : 'bg-slate-900 text-slate-500 border border-white/5 hover:bg-slate-800'
+                  ? 'bg-[#e6f7f0] text-[#00b473] border border-[#00b473]/40'
+                  : 'bg-[#f7f8fa] text-[#8e91a0] border border-[#e0e2e8] hover:bg-[#eef0f3]'
               }`}
             >
               {idx + 1}
@@ -127,46 +85,46 @@ export default function QuizCard({ quiz, onSubmit, isSubmitting }) {
       </div>
 
       {/* Active Question Box */}
-      <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 shadow-xl relative">
-        <div className="flex items-center justify-between mb-4">
-          <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-brand-500/15 text-brand-300 border border-brand-500/20">
-            Target Concept: {currentQ.concept || 'Foundational'}
+      <div className="card-miro p-6 sm:p-8 border-[#e0e2e8] bg-white shadow-card space-y-6">
+        <div className="flex items-center justify-between">
+          <span className="badge-pill badge-neutral text-[10px]">
+            Concept: {currentQ.concept || 'Core Idea'}
           </span>
-          <span className="text-xs text-slate-400 font-medium">
-            Single Choice
+          <span className="text-[11px] text-[#8e91a0]">
+            Select one answer
           </span>
         </div>
 
-        <h3 className="text-lg sm:text-xl font-bold text-white mb-6 leading-relaxed">
+        <h3 className="text-lg sm:text-xl font-bold text-[#1c1c1e] leading-snug">
           {currentQ.question}
         </h3>
 
         {/* MCQ Options */}
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {currentQ.options?.map((opt, optIdx) => {
-            const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+            const letter = String.fromCharCode(65 + optIdx);
             const isSelected = answers[currentQ.id] === optIdx;
 
             return (
               <div
                 key={optIdx}
                 onClick={() => handleSelectOption(optIdx)}
-                className={`flex items-center p-4 rounded-2xl cursor-pointer border transition-all ${
+                className={`flex items-center p-3.5 rounded-xl cursor-pointer border transition-all ${
                   isSelected
-                    ? 'bg-brand-600/20 border-brand-500 shadow-lg shadow-brand-600/10 text-white translate-x-1'
-                    : 'bg-slate-900/60 border-white/5 hover:bg-slate-800/70 hover:border-white/10 text-slate-300'
+                    ? 'bg-[#fff8e0]/70 border-[#ffd02f] shadow-sm text-[#1c1c1e]'
+                    : 'bg-white border-[#e0e2e8] hover:bg-[#fafbfc] hover:border-[#c7cad5] text-[#2c2c34]'
                 }`}
               >
                 <div
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold mr-3.5 transition-colors ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold mr-3 transition-colors ${
                     isSelected
-                      ? 'bg-brand-500 text-white shadow-md shadow-brand-500/30'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-[#1c1c1e] text-white'
+                      : 'bg-[#f7f8fa] border border-[#e0e2e8] text-[#555a6a]'
                   }`}
                 >
                   {letter}
                 </div>
-                <span className="text-sm sm:text-base font-medium flex-1">
+                <span className="text-xs sm:text-sm font-medium flex-1">
                   {opt}
                 </span>
               </div>
@@ -175,32 +133,32 @@ export default function QuizCard({ quiz, onSubmit, isSubmitting }) {
         </div>
 
         {/* Bottom Card Navigation & Submission */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
+        <div className="flex items-center justify-between pt-6 border-t border-[#eef0f3]">
           <button
             onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
             disabled={currentIndex === 0}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-900 border border-white/5 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="btn-secondary text-xs px-4 py-2 flex items-center space-x-1.5"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm font-semibold">Previous</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Previous</span>
           </button>
 
           {currentIndex < questions.length - 1 ? (
             <button
               onClick={() => setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1))}
-              className="flex items-center space-x-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold shadow-lg shadow-brand-600/20 transition-all"
+              className="btn-primary text-xs px-5 py-2 flex items-center space-x-1.5"
             >
               <span>Next</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold shadow-lg shadow-emerald-600/25 transition-all animate-pulse-subtle"
+              className="btn-yellow text-xs px-6 py-2 flex items-center space-x-1.5"
             >
-              <Send className="w-4 h-4" />
-              <span>{isSubmitting ? 'Evaluating...' : 'Submit Quiz'}</span>
+              <Send className="w-3.5 h-3.5 mr-1" />
+              <span>{isSubmitting ? 'Evaluating…' : 'Submit Quiz'}</span>
             </button>
           )}
         </div>

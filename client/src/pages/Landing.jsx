@@ -1,102 +1,96 @@
 import React from 'react';
-import { ArrowRight, Sparkles, BookOpen, Layers, CheckCircle, Zap, Shield, Brain, Play } from 'lucide-react';
-import { api } from '../services/api';
+import { ArrowRight, Sparkles, BookOpen, Layers, CheckCircle2, Zap, Brain } from 'lucide-react';
 
 export default function Landing({ onStartLearning, onQuickDemo }) {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-between">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-between bg-white text-[#1c1c1e]">
       {/* Hero Section */}
-      <section className="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
-        {/* Ambient Glows */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-brand-600/20 via-indigo-500/15 to-transparent blur-3xl pointer-events-none rounded-full" />
-
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-bold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-            <span>AI-Powered Study Assistant & Personal Revision Coach</span>
+      <section className="pt-16 pb-20 px-4 sm:px-6 max-w-5xl mx-auto text-center">
+        <div className="space-y-6">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#fff8e0] border border-[#ffd02f]/50 text-[#746019] text-xs font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ffd02f]"></span>
+            <span>Intelligent Academic Study Companion</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Turn messy notes into your{' '}
-            <span className="bg-gradient-to-r from-brand-400 via-indigo-300 to-teal-300 bg-clip-text text-transparent">
-              personal revision kit.
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#1c1c1e] leading-[1.1] max-w-4xl mx-auto">
+            Turn class notes into an{' '}
+            <span className="underline decoration-[#ffd02f] decoration-4 underline-offset-4">
+              active revision system.
             </span>
           </h1>
 
-          <p className="text-base sm:text-xl text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
-            Stop passive re-reading. Pocket Mentor transforms raw lecture notes, PDFs, and slides into 
-            60-second summaries, active recall flashcards, and diagnostic quizzes—then closes the loop by 
-            turning your mistakes into targeted revision drills.
+          <p className="text-base sm:text-lg text-[#555a6a] max-w-2xl mx-auto font-normal leading-relaxed">
+            Stop passive re-reading. Pocket Mentor transforms raw lecture notes and PDFs into high-yield 
+            summaries, active recall flashcards, and diagnostic quizzes—then turns your quiz errors 
+            into targeted revision drills.
           </p>
 
-          {/* Primary Call to Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          {/* Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
               onClick={onQuickDemo}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-brand-500 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-base shadow-xl shadow-brand-600/30 flex items-center justify-center space-x-2.5 transition-all hover:scale-[1.02] group"
+              className="btn-yellow px-7 py-3.5 text-sm font-semibold flex items-center space-x-2 w-full sm:w-auto shadow-card"
             >
-              <Zap className="w-5 h-5 text-amber-300 fill-amber-300" />
-              <span>Launch Instant 1-Click Demo</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <Zap className="w-4 h-4 text-[#1c1c1e] fill-[#1c1c1e]" />
+              <span>Launch 1-Click Guest Demo</span>
+              <ArrowRight className="w-4 h-4 ml-1" />
             </button>
 
             <button
               onClick={onStartLearning}
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-brand-500/40 text-slate-200 hover:text-white font-semibold text-base transition-all shadow-md"
+              className="btn-secondary px-7 py-3.5 text-sm font-semibold w-full sm:w-auto"
             >
-              Sign Up Free
+              Create Account
             </button>
           </div>
 
-          {/* Dynamic Transformation Animation Preview */}
+          {/* Core Learning Loop Visualizer */}
           <div className="pt-12 max-w-4xl mx-auto">
-            <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+            <div className="card-miro p-6 sm:p-8 border-[#e0e2e8] bg-[#fafbfc] shadow-card text-left space-y-6">
+              <div className="flex flex-wrap items-center justify-between border-b border-[#eef0f3] pb-4 gap-2">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                  <span className="text-xs text-slate-400 font-mono ml-2">Core Learning Loop in Action</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#1c1c1e]" />
+                  <span className="text-xs font-bold text-[#1c1c1e] uppercase tracking-wider">The Pocket Mentor Learning Loop</span>
                 </div>
-                <span className="text-xs font-bold text-brand-300 bg-brand-500/10 px-2.5 py-1 rounded-md">
-                  Understand → Recall → Test → Revise
+                <span className="badge-pill badge-yellow text-[10px]">
+                  Ingest → Study → Quiz → Revise
                 </span>
               </div>
 
-              {/* Three Pillars Representation */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                {/* 1. Raw Notes */}
-                <div className="p-4 rounded-2xl bg-slate-900/90 border border-white/5 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    <BookOpen className="w-4 h-4 text-brand-400" />
-                    <span>1. Unstructured Notes</span>
+              {/* Three Loop Steps */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* 1. Unstructured Notes */}
+                <div className="p-4 rounded-xl bg-white border border-[#e0e2e8] space-y-2">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-[#1c1c1e] uppercase tracking-wider">
+                    <BookOpen className="w-4 h-4 text-[#4262ff]" />
+                    <span>1. Ingest Notes</span>
                   </div>
-                  <div className="text-xs text-slate-400 font-mono bg-slate-950 p-2.5 rounded-lg line-clamp-3">
-                    "Process Pi critical section... mutual exclusion needed... race condition... wait() decrements semaphore..."
-                  </div>
+                  <p className="text-xs text-[#555a6a] leading-relaxed">
+                    Paste raw bullet points or upload lecture documents in PDF, DOCX, or text format.
+                  </p>
                 </div>
 
-                {/* 2. AI Synthesis */}
-                <div className="p-4 rounded-2xl bg-brand-950/40 border border-brand-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-brand-300 uppercase tracking-wider">
-                    <Sparkles className="w-4 h-4 text-brand-400" />
-                    <span>2. AI Study Kit</span>
+                {/* 2. Structured Study Kit */}
+                <div className="p-4 rounded-xl bg-white border border-[#e0e2e8] space-y-2">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-[#1c1c1e] uppercase tracking-wider">
+                    <Layers className="w-4 h-4 text-[#0fbcb0]" />
+                    <span>2. Study Workspace</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="px-2 py-0.5 rounded text-[11px] bg-brand-500/20 text-brand-300 font-semibold">⚡ 60s Takeaway</span>
-                    <span className="px-2 py-0.5 rounded text-[11px] bg-indigo-500/20 text-indigo-300 font-semibold">🗂️ Active Flashcards</span>
-                    <span className="px-2 py-0.5 rounded text-[11px] bg-purple-500/20 text-purple-300 font-semibold">📝 Diagnostic Quiz</span>
+                  <div className="flex flex-wrap gap-1">
+                    <span className="badge-pill badge-neutral text-[10px]">60s Summary</span>
+                    <span className="badge-pill badge-neutral text-[10px]">Flashcards</span>
+                    <span className="badge-pill badge-neutral text-[10px]">Memory Hooks</span>
                   </div>
                 </div>
 
                 {/* 3. Targeted Revise Again */}
-                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-2">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                    <CheckCircle className="w-4 h-4 text-emerald-400" />
-                    <span>3. Smart Revise Loop</span>
+                <div className="p-4 rounded-xl bg-white border border-[#e0e2e8] space-y-2">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold text-[#1c1c1e] uppercase tracking-wider">
+                    <CheckCircle2 className="w-4 h-4 text-[#00b473]" />
+                    <span>3. Diagnostic Revise</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Identifies mistakes from quiz answers and generates custom reinforcement mini-drills.
+                  <p className="text-xs text-[#555a6a] leading-relaxed">
+                    Evaluates quiz errors and builds instant targeted reinforcement mini-drills.
                   </p>
                 </div>
               </div>
@@ -105,46 +99,46 @@ export default function Landing({ onStartLearning, onQuickDemo }) {
         </div>
       </section>
 
-      {/* Benefit Pillars */}
-      <section className="py-12 border-t border-white/5 bg-slate-900/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-400">
-                <Brain className="w-5 h-5" />
+      {/* 3 Core Pillars */}
+      <section className="py-12 border-t border-[#eef0f3] bg-[#fafbfc]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#fff8e0] flex items-center justify-center text-[#746019]">
+                <Brain className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-white">Understand Deeply</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Receive crisp 60-second audio summaries, clear structured breakdowns, and memorable AI analogies.
+              <h3 className="text-base font-bold text-[#1c1c1e]">Deep Conceptual Clarity</h3>
+              <p className="text-xs text-[#555a6a] leading-relaxed">
+                Concise summaries, audio narration, and memorable mental anchors for complex topics.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                <Layers className="w-5 h-5" />
+            <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#f5f3ff] flex items-center justify-center text-[#4262ff]">
+                <Layers className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-white">Recall & Retain</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Flip interactive 3D flashcards with Spaced Repetition ratings (Easy/Medium/Hard) to seal concepts in memory.
+              <h3 className="text-base font-bold text-[#1c1c1e]">Active Recall Drill</h3>
+              <p className="text-xs text-[#555a6a] leading-relaxed">
+                Flip 3D flashcards with immediate recall feedback to reinforce memory retention.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                <CheckCircle className="w-5 h-5" />
+            <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#e6f7f0] flex items-center justify-center text-[#00b473]">
+                <CheckCircle2 className="w-4 h-4" />
               </div>
-              <h3 className="text-lg font-bold text-white">Diagnose & Revise</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Take timed or relaxed MCQ quizzes. Pocket Mentor maps your weak spots and immediately prescribes targeted practice.
+              <h3 className="text-base font-bold text-[#1c1c1e]">Autonomous Weakness Fix</h3>
+              <p className="text-xs text-[#555a6a] leading-relaxed">
+                Pinpoints exact concept gaps from quizzes and prescribes instant revision kits.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-6 text-center text-xs text-slate-500">
-        Pocket Mentor — Autonomous AI Revision System • Built with MERN + Intelligent AI
+      {/* Clean Minimalist Footer */}
+      <footer className="border-t border-[#eef0f3] py-6 text-center text-xs text-[#8e91a0]">
+        Pocket Mentor — Intelligent Academic OS • Quality-First Architecture
       </footer>
     </div>
   );

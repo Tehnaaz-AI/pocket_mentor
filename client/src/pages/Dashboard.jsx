@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, Flame, Award, BookOpen, Layers, PlusCircle, 
-  ArrowRight, Clock, RefreshCw, AlertTriangle, Zap, CheckCircle2 
+  ArrowRight, Clock, AlertTriangle, CheckCircle2 
 } from 'lucide-react';
 import { api } from '../services/api';
 import RevisionTodoList from '../components/RevisionTodoList';
@@ -27,116 +27,117 @@ export default function Dashboard({ user, onNavigate, onOpenSession, onStartSess
     }
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Top Greeting & Daily Goal Banner */}
-      <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-md">
-                Active Student Workspace
-              </span>
-              {/* Reads the student's real study budget, which is also what the
-                  priority engine fits today's plan to. */}
-              <span className="text-xs text-slate-400">
-                Daily Goal: {stats?.dailyStudyMinutes || 90} mins
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Welcome back, {user?.name || 'Scholar'}! 👋
-            </h1>
-            <p className="text-sm text-slate-400 max-w-xl">
-              Turn your class notes into quick summaries, flashcards, and diagnostic quizzes. Review your weak spots to boost retention.
-            </p>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      {/* Top Welcome Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#e0e2e8] pb-6">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#8e91a0]">
+              Academic Workspace
+            </span>
+            <span className="w-1 h-1 rounded-full bg-[#8e91a0]"></span>
+            <span className="text-xs text-[#555a6a]">
+              Daily Target: {stats?.dailyStudyMinutes || 90}m
+            </span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1c1c1e] tracking-tight">
+            {getGreeting()}, {user?.name?.split(' ')[0] || 'Scholar'}
+          </h1>
+          <p className="text-sm text-[#555a6a]">
+            Your learning plan is prioritized by upcoming deadlines, quiz gaps, and retention decay.
+          </p>
+        </div>
 
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => onNavigate('import')}
-              className="px-5 py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold shadow-lg shadow-brand-600/25 flex items-center space-x-2 transition-all hover:scale-105"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Import New Notes</span>
-            </button>
-          </div>
+        {/* Quick CTA */}
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => onNavigate('import')}
+            className="btn-primary flex items-center space-x-2 text-xs"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>Import Notes</span>
+          </button>
         </div>
       </div>
 
-      {/* Next Best Action — the Academic OS layer, inside the existing dashboard */}
+      {/* Primary Centerpiece: Next Best Action */}
       <NextBestAction
         onStartSession={onStartSession || onOpenSession}
         onNavigate={onNavigate}
       />
 
-      {/* Metrics Row */}
+      {/* Metrics Row — Clean, Restrained, Real Data */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Streak */}
-        <div className="card-glass p-5 rounded-2xl border border-white/5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Study Streak</span>
-            <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
+        <div className="card-miro p-5 space-y-2 bg-white">
+          <div className="flex items-center justify-between text-[#8e91a0]">
+            <span className="text-xs font-medium">Study Streak</span>
+            <Flame className="w-4 h-4 text-[#ffd02f] fill-[#ffd02f]" />
           </div>
-          <div className="text-2xl font-black text-white">
-            {stats?.streak || user?.streak || 1} <span className="text-xs text-slate-400 font-normal">Days</span>
+          <div className="text-2xl font-bold text-[#1c1c1e] font-mono">
+            {stats?.streak || user?.streak || 1} <span className="text-xs text-[#8e91a0] font-sans font-normal">days</span>
           </div>
-          <p className="text-[11px] text-emerald-400 font-medium flex items-center">
-            <span>+1 today • Keep momentum</span>
+          <p className="text-[11px] text-[#00b473] font-medium">
+            Active daily momentum
           </p>
         </div>
 
         {/* Metric 2: Quiz Accuracy */}
-        <div className="card-glass p-5 rounded-2xl border border-white/5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Average Accuracy</span>
-            <Award className="w-4 h-4 text-brand-400" />
+        <div className="card-miro p-5 space-y-2 bg-white">
+          <div className="flex items-center justify-between text-[#8e91a0]">
+            <span className="text-xs font-medium">Average Accuracy</span>
+            <Award className="w-4 h-4 text-[#4262ff]" />
           </div>
-          <div className="text-2xl font-black text-white">
-            {stats?.averageScore || 0}%
+          <div className="text-2xl font-bold text-[#1c1c1e] font-mono">
+            {stats?.averageScore ?? 0}%
           </div>
-          <p className="text-[11px] text-slate-400 font-medium">
+          <p className="text-[11px] text-[#8e91a0]">
             Across {stats?.totalQuizzes || 0} quizzes taken
           </p>
         </div>
 
         {/* Metric 3: Study Kits */}
-        <div className="card-glass p-5 rounded-2xl border border-white/5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Active Study Kits</span>
-            <Layers className="w-4 h-4 text-indigo-400" />
+        <div className="card-miro p-5 space-y-2 bg-white">
+          <div className="flex items-center justify-between text-[#8e91a0]">
+            <span className="text-xs font-medium">Active Study Kits</span>
+            <Layers className="w-4 h-4 text-[#0fbcb0]" />
           </div>
-          <div className="text-2xl font-black text-white">
+          <div className="text-2xl font-bold text-[#1c1c1e] font-mono">
             {stats?.totalKits || 0}
           </div>
-          <p className="text-[11px] text-slate-400 font-medium">
+          <p className="text-[11px] text-[#8e91a0]">
             Generated revision modules
           </p>
         </div>
 
-        {/* Metric 4: Weak Spots */}
-        <div className="card-glass p-5 rounded-2xl border border-white/5 space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-semibold">Concepts for Review</span>
-            <AlertTriangle className="w-4 h-4 text-rose-400" />
+        {/* Metric 4: Diagnosed Weak Spots */}
+        <div className="card-miro p-5 space-y-2 bg-white">
+          <div className="flex items-center justify-between text-[#8e91a0]">
+            <span className="text-xs font-medium">Concepts to Review</span>
+            <AlertTriangle className="w-4 h-4 text-[#ff9999]" />
           </div>
-          <div className="text-2xl font-black text-rose-400">
+          <div className="text-2xl font-bold text-[#1c1c1e] font-mono">
             {stats?.weakTopics?.length || 0}
           </div>
-          <p className="text-[11px] text-rose-300/80 font-medium">
+          <p className="text-[11px] text-[#ff9999] font-medium">
             Diagnosed by quiz engine
           </p>
         </div>
       </div>
 
-      {/* Main Grid: Recent Study Kits & Revision Due */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Secondary Grid: Recent Kits & Contextual Tasks */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left 2 Cols: Quick Revision To-Do List & Recent Study Kits */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Quick Revision To-Do List */}
+        {/* Left 2 Cols: To-Do Goals & Recent Study Kits */}
+        <div className="lg:col-span-2 space-y-6">
           <RevisionTodoList
             userId={user?.id}
             weakTopics={stats?.weakTopics || []}
@@ -145,136 +146,126 @@ export default function Dashboard({ user, onNavigate, onOpenSession, onStartSess
             onNavigate={onNavigate}
           />
 
-          <div className="space-y-4">
+          {/* Recent Study Kits */}
+          <div className="card-miro p-6 sm:p-7 border-[#e0e2e8] bg-white space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white tracking-tight flex items-center space-x-2">
-                <BookOpen className="w-5 h-5 text-brand-400" />
-                <span>Recent Revision Study Kits</span>
-              </h2>
-            <button
-              onClick={() => onNavigate('import')}
-              className="text-xs font-bold text-brand-400 hover:text-brand-300 transition-colors"
-            >
-              + Create New
-            </button>
-          </div>
-
-          {stats?.recentSessions && stats.recentSessions.length > 0 ? (
-            <div className="space-y-3">
-              {stats.recentSessions.map(session => (
-                <div
-                  key={session._id}
-                  onClick={() => onOpenSession(session._id)}
-                  className="card-glass card-glass-hover p-5 rounded-2xl border border-white/10 cursor-pointer flex items-center justify-between group"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs font-bold px-2 py-0.5 rounded bg-brand-500/10 text-brand-300 border border-brand-500/20">
-                        {session.subject || 'General'}
-                      </span>
-                      <span className="text-xs text-slate-400 flex items-center space-x-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{new Date(session.createdAt).toLocaleDateString()}</span>
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-white group-hover:text-brand-300 transition-colors">
-                      {session.title}
-                    </h3>
-                    <p className="text-xs text-slate-400 line-clamp-1">
-                      {session.sixtySecondSummary?.coreIdea || 'Active study session with flashcards and quiz.'}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center space-x-3 text-slate-400 group-hover:text-brand-300 transition-colors pl-4">
-                    <span className="text-xs font-semibold hidden sm:inline">Open Workspace</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="card-glass p-8 rounded-3xl text-center space-y-4">
-              <Sparkles className="w-12 h-12 text-brand-400 mx-auto opacity-50" />
-              <div>
-                <h3 className="text-base font-bold text-white">No Study Kits Yet</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                  Upload your class notes, lecture slides, or paste text to generate your first AI revision kit.
-                </p>
+              <div className="flex items-center space-x-2">
+                <BookOpen className="w-4 h-4 text-[#1c1c1e]" />
+                <h3 className="text-base font-bold text-[#1c1c1e] tracking-tight">
+                  Recent Study Kits
+                </h3>
               </div>
               <button
                 onClick={() => onNavigate('import')}
-                className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-md"
+                className="text-xs font-semibold text-[#4262ff] hover:underline"
               >
-                Create Study Kit
+                + Create New
               </button>
             </div>
-          )}
+
+            {stats?.recentSessions && stats.recentSessions.length > 0 ? (
+              <div className="space-y-2.5">
+                {stats.recentSessions.map(session => (
+                  <div
+                    key={session._id}
+                    onClick={() => onOpenSession(session._id)}
+                    className="p-4 rounded-xl border border-[#e0e2e8] hover:border-[#4262ff]/50 bg-white hover:bg-[#f7f8fa] cursor-pointer flex items-center justify-between group transition-all"
+                  >
+                    <div className="space-y-1 min-w-0 flex-1 mr-4">
+                      <div className="flex items-center space-x-2">
+                        <span className="badge-pill badge-neutral text-[10px]">
+                          {session.subject || 'General'}
+                        </span>
+                        <span className="text-[11px] text-[#8e91a0] flex items-center space-x-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{new Date(session.createdAt).toLocaleDateString()}</span>
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-[#1c1c1e] group-hover:text-[#4262ff] transition-colors truncate">
+                        {session.title}
+                      </h4>
+                      <p className="text-xs text-[#555a6a] line-clamp-1">
+                        {session.sixtySecondSummary?.coreIdea || 'Active study session with concepts, flashcards and quiz.'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-1 text-[#8e91a0] group-hover:text-[#4262ff] transition-colors flex-shrink-0">
+                      <span className="text-xs font-medium hidden sm:inline">Open</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-[#8e91a0] text-xs rounded-xl bg-[#fafbfc] border border-dashed border-[#e0e2e8] space-y-2">
+                <p>No study kits created yet.</p>
+                <button
+                  onClick={() => onNavigate('import')}
+                  className="btn-primary text-xs py-1.5 px-3.5"
+                >
+                  Import Your First Notes
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right 1 Col: Revision Due & Quick 60s Actions */}
+        {/* Right 1 Col: Revision Needs & Quick Recall */}
         <div className="space-y-6">
-          {/* Revision Due Card */}
-          <div className="card-glass p-6 rounded-3xl border border-white/10 space-y-4">
+          {/* Weak Concepts Card */}
+          <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center space-x-1.5">
-                <RefreshCw className="w-4 h-4" />
-                <span>Revision Due</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#1c1c1e] flex items-center space-x-1.5">
+                <span>Concepts for Review</span>
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300">
-                High Priority
+              <span className="badge-pill badge-coral text-[10px]">
+                Quiz Gaps
               </span>
             </div>
 
             {stats?.weakTopics && stats.weakTopics.length > 0 ? (
-              <div className="space-y-3">
-                <p className="text-xs text-slate-300">
-                  You missed questions on these concepts in your recent quizzes:
+              <div className="space-y-2.5">
+                <p className="text-xs text-[#555a6a]">
+                  These concepts were missed in recent quiz assessments:
                 </p>
                 <div className="space-y-2">
                   {stats.weakTopics.slice(0, 3).map((w, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between">
-                      <span className="text-xs font-bold text-rose-200">{w.concept}</span>
-                      <span className="text-[10px] text-rose-300 font-semibold">{w.correct}/{w.attempts} Correct</span>
+                    <div key={idx} className="p-3 rounded-xl bg-[#fff8e0]/60 border border-[#ffd02f]/40 flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#1c1c1e]">{w.concept}</span>
+                      <span className="text-[11px] font-mono font-medium text-[#746019]">{w.correct}/{w.attempts} correct</span>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-1">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 mx-auto" />
-                <p className="text-xs font-bold text-emerald-300">All Topics Solid!</p>
-                <p className="text-[11px] text-emerald-400/80">No active weak spots diagnosed yet.</p>
+              <div className="p-4 rounded-xl bg-[#f7f8fa] border border-[#e0e2e8] text-center space-y-1">
+                <CheckCircle2 className="w-5 h-5 text-[#00b473] mx-auto" />
+                <p className="text-xs font-bold text-[#1c1c1e]">All Concepts Solid</p>
+                <p className="text-[11px] text-[#8e91a0]">No active quiz weak spots diagnosed.</p>
               </div>
             )}
           </div>
 
-          {/* Quick Action: 60-Second Revision */}
-          <div className="card-glass p-6 rounded-3xl border border-brand-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950/40 space-y-3">
-            <div className="flex items-center space-x-2 text-brand-300">
-              <Zap className="w-4 h-4 fill-brand-300" />
-              <span className="text-xs font-bold uppercase tracking-wider">Quick Action</span>
-            </div>
-            <h4 className="text-sm font-bold text-white">60-Second Rapid Revision</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Have only a minute before class? Jump straight into your most recent high-yield summary.
-            </p>
-            {stats?.recentSessions?.[0] ? (
+          {/* Quick Rapid Recall */}
+          {stats?.recentSessions?.[0] && (
+            <div className="card-miro p-6 border-[#e0e2e8] bg-[#f7f8fa] space-y-3">
+              <div className="badge-pill badge-yellow text-[10px]">
+                RAPID RECALL
+              </div>
+              <h4 className="text-sm font-bold text-[#1c1c1e]">
+                60-Second Refresher
+              </h4>
+              <p className="text-xs text-[#555a6a] leading-relaxed">
+                Review your core summary before class or an exam.
+              </p>
               <button
                 onClick={() => onOpenSession(stats.recentSessions[0]._id)}
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-md shadow-brand-600/20"
+                className="btn-secondary w-full text-xs py-2 bg-white"
               >
-                Review "{stats.recentSessions[0].title.slice(0, 25)}..."
+                Review "{stats.recentSessions[0].title.slice(0, 24)}…"
               </button>
-            ) : (
-              <button
-                onClick={() => onNavigate('import')}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all"
-              >
-                Import Notes First
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
       </div>

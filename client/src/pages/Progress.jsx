@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  BarChart3, Flame, Award, TrendingUp, CheckCircle2, 
-  AlertTriangle, Clock, Calendar, Sparkles, BookOpen 
+  BarChart3, Flame, Award, BookOpen, Clock, 
+  Sparkles, ArrowRight, CheckCircle2 
 } from 'lucide-react';
 import { api } from '../services/api';
 
-export default function Progress({ onNavigate }) {
+export default function Progress({ onNavigate, onOpenSession }) {
   const [progressData, setProgressData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,8 +27,9 @@ export default function Progress({ onNavigate }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center">
-        <Sparkles className="w-8 h-8 text-brand-400 animate-spin" />
+      <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3">
+        <Sparkles className="w-6 h-6 text-[#ffd02f] animate-pulse" />
+        <span className="text-xs text-[#555a6a] font-medium">Loading your progress history…</span>
       </div>
     );
   }
@@ -42,125 +43,136 @@ export default function Progress({ onNavigate }) {
   const history = progressData?.history || [];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center space-x-2">
-          <BarChart3 className="w-7 h-7 text-brand-400" />
-          <span>Long-Term Revision & Mastery Analytics</span>
+      <div className="space-y-1.5 border-b border-[#e0e2e8] pb-6">
+        <div className="flex items-center space-x-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#8e91a0]">
+            Analytics & Growth
+          </span>
+          <span className="w-1 h-1 rounded-full bg-[#8e91a0]"></span>
+          <span className="badge-pill badge-teal text-[10px]">
+            Real Data
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1c1c1e] tracking-tight">
+          Learning Progress & Concept Mastery
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Tracking knowledge retention, accuracy trends, and diagnosed weak concepts over time.
+        <p className="text-sm text-[#555a6a]">
+          Direct diagnostics of your retention rate, quiz assessments, and concept strength over time.
         </p>
       </div>
 
       {/* Top Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="card-glass p-6 rounded-3xl border border-white/10 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2">
+          <div className="flex items-center justify-between text-[#8e91a0] text-xs font-medium">
             <span>Overall Accuracy</span>
-            <Award className="w-5 h-5 text-brand-400" />
+            <Award className="w-4 h-4 text-[#4262ff]" />
           </div>
-          <div className="text-3xl font-black text-white">
-            {progressData?.averageScore || 0}%
+          <div className="text-3xl font-bold text-[#1c1c1e] font-mono">
+            {progressData?.averageScore ?? 0}%
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#555a6a]">
             Across {progressData?.totalQuizzes || 0} quiz assessments
           </p>
         </div>
 
-        <div className="card-glass p-6 rounded-3xl border border-white/10 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2">
+          <div className="flex items-center justify-between text-[#8e91a0] text-xs font-medium">
             <span>Active Study Streak</span>
-            <Flame className="w-5 h-5 text-amber-400 fill-amber-400" />
+            <Flame className="w-4 h-4 text-[#ffd02f] fill-[#ffd02f]" />
           </div>
-          <div className="text-3xl font-black text-white">
-            {progressData?.studyStreak || 1} <span className="text-xs font-normal text-slate-400">Days</span>
+          <div className="text-3xl font-bold text-[#1c1c1e] font-mono">
+            {progressData?.studyStreak || 1} <span className="text-xs font-normal text-[#8e91a0] font-sans">days</span>
           </div>
-          <p className="text-xs text-emerald-400 font-medium">
-            Daily consistency builds long-term recall
+          <p className="text-xs text-[#00b473] font-medium">
+            Daily consistency reinforces long-term memory
           </p>
         </div>
 
-        <div className="card-glass p-6 rounded-3xl border border-white/10 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="card-miro p-6 border-[#e0e2e8] bg-white space-y-2">
+          <div className="flex items-center justify-between text-[#8e91a0] text-xs font-medium">
             <span>Diagnosed Topics</span>
-            <BookOpen className="w-5 h-5 text-indigo-400" />
+            <BookOpen className="w-4 h-4 text-[#0fbcb0]" />
           </div>
-          <div className="text-3xl font-black text-white">
+          <div className="text-3xl font-bold text-[#1c1c1e] font-mono">
             {topics.length}
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#555a6a]">
             {topics.filter(t => t.mastery === 'Mastered').length} Mastered • {topics.filter(t => t.mastery === 'Needs Review').length} Review Due
           </p>
         </div>
       </div>
 
       {/* Concept Mastery Breakdown */}
-      <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
-        <h2 className="text-lg font-bold text-white tracking-tight flex items-center space-x-2">
-          <TrendingUp className="w-5 h-5 text-brand-400" />
-          <span>Concept Mastery Index</span>
-        </h2>
+      <div className="card-miro p-6 sm:p-8 border-[#e0e2e8] bg-white space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-[#1c1c1e] tracking-tight flex items-center space-x-2">
+            <span>Concept Mastery Breakdown</span>
+          </h2>
+          <span className="text-xs text-[#8e91a0]">
+            {topics.length} concepts diagnosed
+          </span>
+        </div>
 
         {topics.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {topics.map((t, idx) => {
-              let badgeColor = 'bg-rose-500/15 text-rose-300 border-rose-500/30';
-              let barColor = 'bg-rose-500';
+              let badgeClass = 'badge-coral';
+              let barColor = 'bg-[#ff9999]';
               if (t.mastery === 'Mastered') {
-                badgeColor = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
-                barColor = 'bg-emerald-500';
+                badgeClass = 'badge-teal';
+                barColor = 'bg-[#00b473]';
               } else if (t.mastery === 'Improving') {
-                badgeColor = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-                barColor = 'bg-amber-500';
+                badgeClass = 'badge-yellow';
+                barColor = 'bg-[#ffd02f]';
               }
 
               return (
-                <div key={idx} className="p-4 rounded-2xl bg-slate-900/80 border border-white/5 space-y-2">
+                <div key={idx} className="p-4 rounded-xl bg-[#fafbfc] border border-[#e0e2e8] space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">{t.name}</span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${badgeColor}`}>
+                    <span className="text-xs sm:text-sm font-bold text-[#1c1c1e]">{t.name}</span>
+                    <span className={`badge-pill text-[10px] ${badgeClass}`}>
                       {t.mastery}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span>{t.correct} correct of {t.attempts} questions tested</span>
-                    <span className="font-semibold text-slate-200">{t.accuracy}%</span>
+                  <div className="flex items-center justify-between text-xs text-[#555a6a] font-mono">
+                    <span>{t.correct} correct / {t.attempts} tested</span>
+                    <span className="font-bold text-[#1c1c1e]">{t.accuracy}%</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className={`${barColor} h-full rounded-full transition-all duration-500`} style={{ width: `${t.accuracy}%` }} />
+                  <div className="w-full bg-[#f0f2f5] h-1.5 rounded-full overflow-hidden">
+                    <div className={`${barColor} h-full rounded-full transition-all duration-300`} style={{ width: `${t.accuracy}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="py-12 text-center text-slate-400 text-sm">
-            Complete your first quiz to generate your concept mastery breakdown.
+          <div className="py-12 text-center text-[#8e91a0] text-xs rounded-xl bg-[#fafbfc] border border-dashed border-[#e0e2e8]">
+            Your learning history and concept mastery will appear here after your first quiz assessment.
           </div>
         )}
       </div>
 
       {/* Quiz Attempt History Timeline */}
       {history.length > 0 && (
-        <div className="card-glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
-          <h2 className="text-lg font-bold text-white tracking-tight flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-indigo-400" />
-            <span>Recent Quiz Sessions</span>
+        <div className="card-miro p-6 sm:p-8 border-[#e0e2e8] bg-white space-y-4">
+          <h2 className="text-base font-bold text-[#1c1c1e] tracking-tight">
+            Recent Assessment History
           </h2>
-          <div className="divide-y divide-white/5">
-            {history.slice(-6).reverse().map((h, idx) => (
+          <div className="divide-y divide-[#eef0f3]">
+            {history.slice(-8).reverse().map((h, idx) => (
               <div key={idx} className="py-3 flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-bold text-white">{h.topic}</div>
-                  <div className="text-xs text-slate-400">{new Date(h.date).toLocaleString()}</div>
+                  <div className="text-xs sm:text-sm font-bold text-[#1c1c1e]">{h.topic}</div>
+                  <div className="text-[11px] text-[#8e91a0]">{new Date(h.date).toLocaleDateString()} at {new Date(h.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
                 <div className="text-right">
-                  <span className={`text-sm font-bold ${h.accuracy >= 70 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  <span className={`text-xs sm:text-sm font-bold font-mono ${h.accuracy >= 70 ? 'text-[#00b473]' : 'text-[#746019]'}`}>
                     {h.accuracy}%
                   </span>
-                  <div className="text-[11px] text-slate-500">{h.score} Correct</div>
+                  <div className="text-[11px] text-[#8e91a0]">{h.score} correct</div>
                 </div>
               </div>
             ))}

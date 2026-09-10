@@ -4,57 +4,64 @@ import { Lightbulb, Compass, Zap, Sparkles } from 'lucide-react';
 export default function MemoryHooksCard({ memoryHooks = [] }) {
   if (!memoryHooks || memoryHooks.length === 0) {
     return (
-      <div className="card-glass p-8 rounded-3xl text-center">
-        <Sparkles className="w-10 h-10 text-brand-400 mx-auto mb-2 opacity-60" />
-        <p className="text-sm text-slate-400">No memory hooks generated for this note.</p>
+      <div className="card-miro p-10 text-center bg-[#fafbfc] border-[#e0e2e8]">
+        <Sparkles className="w-10 h-10 text-[#0fbcb0] mx-auto mb-2" />
+        <h4 className="text-base font-bold text-[#1c1c1e] mb-1">No Memory Hooks Available</h4>
+        <p className="text-xs text-[#555a6a]">Memory hooks will be generated when notes contain rich conceptual models.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-2 mb-2">
-        <Lightbulb className="w-5 h-5 text-amber-400" />
-        <h3 className="text-lg font-bold text-white tracking-tight">AI Memory Hooks & Analogies</h3>
+      <div>
+        <div className="flex items-center space-x-2">
+          <span className="badge-pill badge-teal text-[10px]">
+            RETENTION ANCHORS
+          </span>
+        </div>
+        <h3 className="text-lg font-bold text-[#1c1c1e] tracking-tight mt-1">
+          Memory Hooks & Mental Models
+        </h3>
+        <p className="text-xs text-[#555a6a]">
+          Mnemonics and analogies engineered to trigger immediate recall under test conditions.
+        </p>
       </div>
-      <p className="text-xs text-slate-400 -mt-2 mb-4">
-        Mnemonics and real-world anchors engineered to trigger rapid recall during exams.
-      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {memoryHooks.map((hook, idx) => (
           <div
             key={idx}
-            className="card-glass p-5 rounded-2xl border border-white/10 hover:border-brand-500/30 transition-all space-y-3"
+            className="card-miro p-5 border-[#e0e2e8] bg-white space-y-3.5 hover:border-[#0fbcb0]/50 transition-colors"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-white flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-brand-400" />
+              <span className="text-sm font-bold text-[#1c1c1e] flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-[#0fbcb0]" />
                 <span>{hook.concept}</span>
               </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                Mental Anchor
+              <span className="badge-pill badge-neutral text-[10px]">
+                Anchor
               </span>
             </div>
 
-            {/* Mnemonic */}
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5">
-              <div className="flex items-center space-x-1.5 text-xs font-bold text-amber-300 mb-1">
+            {/* Mnemonic Trick */}
+            <div className="bg-[#fff8e0]/60 p-3.5 rounded-xl border border-[#ffd02f]/40 space-y-1">
+              <div className="flex items-center space-x-1.5 text-xs font-bold text-[#746019]">
                 <Zap className="w-3.5 h-3.5" />
-                <span>Mnemonic Trick:</span>
+                <span>Mnemonic Trigger:</span>
               </div>
-              <p className="text-xs text-slate-300 font-mono">
+              <p className="text-xs text-[#1c1c1e] font-mono leading-relaxed">
                 {hook.mnemonic}
               </p>
             </div>
 
             {/* Analogy */}
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5">
-              <div className="flex items-center space-x-1.5 text-xs font-bold text-cyan-300 mb-1">
+            <div className="bg-[#c3faf5]/25 p-3.5 rounded-xl border border-[#0fbcb0]/30 space-y-1">
+              <div className="flex items-center space-x-1.5 text-xs font-bold text-[#187574]">
                 <Compass className="w-3.5 h-3.5" />
-                <span>Intuitive Analogy:</span>
+                <span>Real-World Analogy:</span>
               </div>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-[#2c2c34] leading-relaxed">
                 {hook.analogy}
               </p>
             </div>

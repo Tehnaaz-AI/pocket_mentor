@@ -32,7 +32,7 @@ export default function App() {
     try {
       const res = await api.guestLogin();
       setUser(res.user);
-      setCurrentTab('import');
+      setCurrentTab('dashboard');
     } catch (err) {
       console.error('Demo login error:', err);
     }
@@ -56,9 +56,6 @@ export default function App() {
 
   /**
    * Start Session from a Next Best Action.
-   * The backend has already generated the study kit from the topic's notes, so
-   * this is the same handoff Import Notes uses — the student lands in the
-   * existing Study Workspace.
    */
   const handleStartRecommendedSession = (sessionId) => {
     if (!sessionId) return;
@@ -73,7 +70,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen bg-[#ffffff] text-[#1c1c1e] flex flex-col font-sans selection:bg-[#ffd02f] selection:text-[#1c1c1e]">
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
@@ -157,6 +154,7 @@ export default function App() {
         {currentTab === 'progress' && user && (
           <Progress
             onNavigate={(tab) => setCurrentTab(tab)}
+            onOpenSession={handleOpenSession}
           />
         )}
       </main>
