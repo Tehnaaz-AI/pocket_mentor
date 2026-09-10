@@ -1,4 +1,11 @@
-const API_BASE = (import.meta.env?.VITE_API_BASE || '/api').replace(/\/$/, '');
+const getApiBase = () => {
+  const envUrl = import.meta.env?.VITE_API_BASE || import.meta.env?.VITE_API_URL;
+  if (!envUrl) return '/api';
+  const clean = envUrl.replace(/\/+$/, '');
+  return clean.endsWith('/api') ? clean : `${clean}/api`;
+};
+
+const API_BASE = getApiBase();
 
 function getAuthHeaders() {
   const token = localStorage.getItem('pm_token');
