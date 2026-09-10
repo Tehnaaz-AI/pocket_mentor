@@ -1,0 +1,44 @@
+{
+    "progress": {
+        "_id": "prog_usr_guest_scholar",
+        "userId": "usr_guest_scholar",
+        "topics": {
+            "Operating Systems": {
+                "attempts": 2,
+                "correct": 0,
+                "mastery": "Needs Review",
+                "lastStudied": "2026-09-10T06:06:32.471Z"
+            },
+            "Mutual Exclusion": {
+                "attempts": 2,
+                "correct": 1,
+                "mastery": "Improving",
+                "lastStudied": "2026-09-10T06:06:32.471Z"
+            },
+            "Hold and Wait": {
+                "attempts": 2,
+                "correct": 0,
+                "mastery": "Needs Review",
+                "lastStudied": "2026-09-10T06:06:32.471Z"
+            }
+        },
+        "totalQuizzes": 2,
+        "averageScore": 17,
+        "studyStreak": 1,
+        "lastActiveDate": "2026-09-10T06:06:32.471Z",
+        "history": [
+            {
+                "date": "2026-09-10T05:32:58.496Z",
+                "score": 1,
+                "accuracy": 33,
+                "topic": "Computer Science"
+            },
+            {
+                "date": "2026-09-10T06:06:32.471Z",
+                "score": 0,
+                "accuracy": 0,
+                "topic": "Computer Science"
+            }
+        ]
+    }
+}

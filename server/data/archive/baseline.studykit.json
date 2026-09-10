@@ -1,0 +1,176 @@
+{
+    "session": {
+        "_id": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+        "userId": "usr_guest_scholar",
+        "noteId": "note_1b6f110b-e243-48d6-9eee-59d4d3ef764f",
+        "title": "Operating Systems Revision",
+        "subject": "Computer Science",
+        "difficulty": "Medium",
+        "summary": "## Revision Guide: Computer Science\n\n### Executive Overview\nOperating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.\n\n### Core Concepts & Pillars\n- **Operating Systems**: Process Synchronization and Deadlocks\n- **Mutual Exclusion**: Only one process can enter the critical section at any time.\n- **Hold and Wait**: Process holds resources while requesting additional ones.\n- **No Preemption**: Resources cannot be forcibly taken away from processes.\n- **Circular Wait**: A closed chain of processes each waiting for resource held by next.\n\n### Key Mechanisms & Principles\n1. No Preemption: Resources cannot be forcibly taken away from processes.\n1. Circular Wait: A closed chain of processes each waiting for resource held by next.\n1. Banker's Algorithm: An avoidance technique developed by Dijkstra to evaluate safe states.\n\n> **Exam Tip**: Pay special attention to distinguishing definitions and boundary cases during quizzes.",
+        "sixtySecondSummary": {
+            "topic": "Computer Science",
+            "coreIdea": "Operating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.",
+            "keyPoints": [
+                "Hold and Wait: Process holds resources while requesting additional ones.",
+                "No Preemption: Resources cannot be forcibly taken away from processes.",
+                "Circular Wait: A closed chain of processes each waiting for resource held by next.",
+                "Banker's Algorithm: An avoidance technique developed by Dijkstra to evaluate safe states."
+            ],
+            "memorableTakeaway": "Master the connection between Operating Systems and Mutual Exclusion to ace your assessments!"
+        },
+        "keyConcepts": [
+            "Operating Systems",
+            "Mutual Exclusion",
+            "Hold and Wait",
+            "No Preemption",
+            "Circular Wait"
+        ],
+        "memoryHooks": [
+            {
+                "concept": "Operating Systems",
+                "mnemonic": "Remember [OS]: Operating Systems drives the process step-by-step.",
+                "analogy": "Think of Operating Systems like a traffic controller directing data flow so no collisions occur.",
+                "example": "In real applications, Operating Systems ensures predictability and high performance."
+            },
+            {
+                "concept": "Mutual Exclusion",
+                "mnemonic": "Remember [ME]: Mutual Exclusion drives the process step-by-step.",
+                "analogy": "Think of Mutual Exclusion like a traffic controller directing data flow so no collisions occur.",
+                "example": "In real applications, Mutual Exclusion ensures predictability and high performance."
+            },
+            {
+                "concept": "Hold and Wait",
+                "mnemonic": "Remember [HAW]: Hold and Wait drives the process step-by-step.",
+                "analogy": "Think of Hold and Wait like a traffic controller directing data flow so no collisions occur.",
+                "example": "In real applications, Hold and Wait ensures predictability and high performance."
+            },
+            {
+                "concept": "No Preemption",
+                "mnemonic": "Remember [NP]: No Preemption drives the process step-by-step.",
+                "analogy": "Think of No Preemption like a traffic controller directing data flow so no collisions occur.",
+                "example": "In real applications, No Preemption ensures predictability and high performance."
+            }
+        ],
+        "quizId": "qz_f474806c-32d7-42ca-9eed-142825ac6550",
+        "status": "ready",
+        "createdAt": "2026-09-10T06:06:32.439Z"
+    },
+    "note": {
+        "_id": "note_1b6f110b-e243-48d6-9eee-59d4d3ef764f",
+        "userId": "usr_guest_scholar",
+        "title": "Operating Systems Revision",
+        "subject": "Computer Science",
+        "sourceType": "generated",
+        "extractedText": "Operating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.\nHold and Wait: Process holds resources while requesting additional ones.\nNo Preemption: Resources cannot be forcibly taken away from processes.\nCircular Wait: A closed chain of processes each waiting for resource held by next.\nBanker's Algorithm: An avoidance technique developed by Dijkstra to evaluate safe states.",
+        "wordCount": 65,
+        "createdAt": "2026-09-10T06:06:32.417Z"
+    },
+    "flashcards": [
+        {
+            "_id": "fc_3fb68e99-cebc-4d64-a56c-5da9d5ff170a",
+            "sessionId": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+            "userId": "usr_guest_scholar",
+            "question": "What is the definition and role of Operating Systems?",
+            "answer": "Process Synchronization and Deadlocks",
+            "concept": "Operating Systems",
+            "difficulty": "Easy",
+            "mastery": "unreviewed",
+            "createdAt": "2026-09-10T06:06:32.428Z"
+        },
+        {
+            "_id": "fc_b21be569-09f9-4d7b-bb3c-b36f6290e63e",
+            "sessionId": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+            "userId": "usr_guest_scholar",
+            "question": "What is the definition and role of Mutual Exclusion?",
+            "answer": "Only one process can enter the critical section at any time.",
+            "concept": "Mutual Exclusion",
+            "difficulty": "Medium",
+            "mastery": "unreviewed",
+            "createdAt": "2026-09-10T06:06:32.428Z"
+        },
+        {
+            "_id": "fc_68bf45fe-0fbe-4eaf-90f0-e13087fd7ee8",
+            "sessionId": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+            "userId": "usr_guest_scholar",
+            "question": "What is the definition and role of Hold and Wait?",
+            "answer": "Process holds resources while requesting additional ones.",
+            "concept": "Hold and Wait",
+            "difficulty": "Hard",
+            "mastery": "unreviewed",
+            "createdAt": "2026-09-10T06:06:32.428Z"
+        },
+        {
+            "_id": "fc_d6f3cb9e-50fa-4526-89ad-92f88fd4c828",
+            "sessionId": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+            "userId": "usr_guest_scholar",
+            "question": "What is the definition and role of No Preemption?",
+            "answer": "Resources cannot be forcibly taken away from processes.",
+            "concept": "No Preemption",
+            "difficulty": "Easy",
+            "mastery": "unreviewed",
+            "createdAt": "2026-09-10T06:06:32.428Z"
+        },
+        {
+            "_id": "fc_ca22fca9-a82d-499a-830a-f4c98f849a9d",
+            "sessionId": "ses_497cf26a-4f23-48b0-81f4-5a370ff615bf",
+            "userId": "usr_guest_scholar",
+            "question": "What is the definition and role of Circular Wait?",
+            "answer": "A closed chain of processes each waiting for resource held by next.",
+            "concept": "Circular Wait",
+            "difficulty": "Medium",
+            "mastery": "unreviewed",
+            "createdAt": "2026-09-10T06:06:32.428Z"
+        }
+    ],
+    "quiz": {
+        "_id": "qz_f474806c-32d7-42ca-9eed-142825ac6550",
+        "topic": "Computer Science",
+        "score": 0,
+        "accuracy": 0,
+        "attempted": true,
+        "questions": [
+            {
+                "id": "q_1",
+                "question": "According to the revision notes, which of the following best describes \"Operating Systems\"?",
+                "options": [
+                    "No Preemption: Resources cannot be forcibly taken away from processes.",
+                    "Operating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.",
+                    "Process Synchronization and Deadlocks",
+                    "Hold and Wait: Process holds resources while requesting additional ones."
+                ],
+                "correctOption": 2,
+                "explanation": "\"Operating Systems\" is specifically defined as: Process Synchronization and Deadlocks",
+                "concept": "Operating Systems",
+                "difficulty": "Medium"
+            },
+            {
+                "id": "q_2",
+                "question": "According to the revision notes, which of the following best describes \"Mutual Exclusion\"?",
+                "options": [
+                    "Only one process can enter the critical section at any time.",
+                    "No Preemption: Resources cannot be forcibly taken away from processes.",
+                    "Operating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.",
+                    "Hold and Wait: Process holds resources while requesting additional ones."
+                ],
+                "correctOption": 0,
+                "explanation": "\"Mutual Exclusion\" is specifically defined as: Only one process can enter the critical section at any time.",
+                "concept": "Mutual Exclusion",
+                "difficulty": "Medium"
+            },
+            {
+                "id": "q_3",
+                "question": "According to the revision notes, which of the following best describes \"Hold and Wait\"?",
+                "options": [
+                    "No Preemption: Resources cannot be forcibly taken away from processes.",
+                    "Hold and Wait: Process holds resources while requesting additional ones.",
+                    "Operating Systems: Process Synchronization and Deadlocks\nMutual Exclusion: Only one process can enter the critical section at any time.",
+                    "Process holds resources while requesting additional ones."
+                ],
+                "correctOption": 3,
+                "explanation": "\"Hold and Wait\" is specifically defined as: Process holds resources while requesting additional ones.",
+                "concept": "Hold and Wait",
+                "difficulty": "Medium"
+            }
+        ]
+    }
+}
