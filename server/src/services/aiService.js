@@ -3,6 +3,9 @@ import { foldDashes } from '../utils/text.js';
 
 let currentKeyIndex = 0;
 let currentGroqKeyIndex = 0;
+// The model that actually served the most recent successful call, so logs
+// name the real model rather than the configured primary after a fallback.
+let lastServingModel = null;
 
 function getMaskedKey(key) {
   if (!key || key.length < 8) return '***';
@@ -383,9 +386,9 @@ Return valid JSON:
   },
 
   activeProviderLabel() {
-    return config.aiProvider === 'groq'
-      ? `Groq (${config.groqModels[0]})`
-      : `Gemini (${config.geminiModels[0]})`;
+    const provider = config.aiProvider === 'groq' ? 'Groq' : 'Gemini';
+    const configured = config.aiProvider === 'groq' ? config.groqModels[0] : config.geminiModels[0];
+    return `${provider} (${lastServingModel || configured})`;
   },
 
   /**
@@ -467,6 +470,7 @@ Return valid JSON:
             try {
               const parsed = JSON.parse(content);
               currentGroqKeyIndex = keyIdx; // stick with the key that worked
+              lastServingModel = model;
               console.log(`[AI] Groq ${model} OK in ${Date.now() - started}ms (${data.usage?.completion_tokens ?? '?'} completion tokens)`);
               return parsed;
             } catch (parseErr) {
