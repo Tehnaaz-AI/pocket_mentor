@@ -1,5 +1,5 @@
 {
-  "name": "pocket-mentor-server",
+  "name": "pocket-mentor-backend",
   "version": "1.0.0",
   "type": "module",
   "description": "Backend server for Pocket Mentor",
